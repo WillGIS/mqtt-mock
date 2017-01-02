@@ -9,6 +9,8 @@
   },
   "author": "Pelle Persson @ Tingcore AB",
   "license": "ISC",
-  "homepage": "",
-  "dependencies": {},
+  "dependencies": {
+    "http": "0.0.0",
+    "mqtt": "2.1.3"
+  }
 }
