@@ -1,0 +1,14 @@
+{
+  "name": "node-mqtt-mock",
+  "version": "0.0.1",
+  "description": "MQTT mock of the Tingco box in Node.js for test purpose",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --harmony index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pelle Persson @ Tingcore AB",
+  "license": "ISC",
+  "homepage": "",
+  "dependencies": {},
+}
