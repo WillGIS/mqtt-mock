@@ -1,10 +1,12 @@
 # node-mqtt-mock
+This a simple MQTT client for mocking the behaviour of the Tingco Box.
+
 
 ## Get started
 1. Clone this repository
 2. run `npm install`
 3. If you want to configure the address to the MQTT broker set the environment variable `BROKER` to the address you want to use. It will default to `127.0.0.1`.
-4. If you want to configure which port the client will use, set the environment variable `PORT` to the port you want to use. It will default to `5000`.
+4. If you want to configure which port the client will use, set the environment variable `PORT` to the port you want to use. It will default to `5000.
 5. run `npm start`
 
 
