@@ -1,6 +1,7 @@
 # node-mqtt-mock
 This a simple MQTT client for mocking the behaviour of the Tingco Box.
 
+The client will subscribe and listen to topics that starts with `tingco-home/a4b39b8d-1043-4933-b3bb-f193c44d226c`.
 
 
 ## Get started
@@ -19,3 +20,9 @@ Open your web browser and go to `localhost:5000/fire/low-battery/{name}` where `
 
 ### Reset the fire topic to default values
 Open your web browser and go to `localhost:5000/fire/reset`.
+
+
+
+### Sending situation under control
+If you are running mosquitto on your machine, you can try to publish a 'situation under control' message by running the following in your terminal:
+`mosquitto_pub -h 127.0.0.1 -t tingco-home/a4b39b8d-1043-4933-b3bb-f193c44d226c/fire/commands -m '{ "command": "SITUATION_UNDER_CONTROL" }'`
