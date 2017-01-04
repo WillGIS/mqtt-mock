@@ -38,12 +38,16 @@ client.on('message', (topic, buffer) => {
 app.get('/fire/alarm/:name', function (req, res) {
   fire.triggerAlarm(client, boxTopic, req.params.name);
   res.send('Fire alarm triggered for '+req.params.name);
-
 });
 
 app.get('/fire/low-battery/:name', function (req, res) {
   fire.triggerLowBattery(client, boxTopic, req.params.name);
-  res.send('low battery triggered for '+req.params.name);
+  res.send('Low battery triggered for '+req.params.name);
+});
+
+app.get('/fire/reset', function (req, res) {
+  fire.reset(client, boxTopic);
+  res.send('The fire alarm state has been set to default.');
 });
 
 app.listen(port, function () {

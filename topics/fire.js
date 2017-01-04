@@ -1,6 +1,6 @@
 'use strict';
 
-let status = {
+const startValues = {
   alarmActive: false,
   alarms: [
     {
@@ -25,6 +25,8 @@ let status = {
   ],
 };
 
+let status = JSON.parse(JSON.stringify(startValues));
+
 const options = {
   qos: 0,
   retain: true,
@@ -33,7 +35,6 @@ const options = {
 function changeStatus(client, boxTopic, message) {
   if (!!message.command &&
       message.command === 'SITUATION_UNDER_CONTROL') {
-    console.log('jepp, situation is under control');
     status.alarmActive = false,
     status.alarms.forEach((device) => {
       device.alarmActive = false;
@@ -64,14 +65,16 @@ function triggerLowBattery(client, boxTopic, name) {
   sendStatus(client, boxTopic);
 }
 
+function reset(client, boxTopic) {
+  status = JSON.parse(JSON.stringify(startValues));
+
+  sendStatus(client, boxTopic);
+}
+
 function sendStatus(client, boxTopic) {
   const topic = boxTopic+'/fire/status';
-  console.log(topic);
 
-  client.publish(topic, JSON.stringify(status),
-      options, () => {
-    console.log('Fire status has been sent.');
-  });
+  client.publish(topic, JSON.stringify(status), options);
 };
 
 module.exports = {
@@ -79,4 +82,5 @@ module.exports = {
   triggerAlarm,
   triggerLowBattery,
   changeStatus,
+  reset,
 };
