@@ -1,6 +1,6 @@
 'use strict';
 
-const startValues = {
+const defaultValues = {
   alarmActive: false,
   alarms: [
     {
@@ -25,7 +25,7 @@ const startValues = {
   ],
 };
 
-let status = JSON.parse(JSON.stringify(startValues));
+let state = JSON.parse(JSON.stringify(defaultValues));
 
 const options = {
   qos: 0,
@@ -35,8 +35,8 @@ const options = {
 function changeStatus(client, boxTopic, message) {
   if (!!message.command &&
       message.command === 'SITUATION_UNDER_CONTROL') {
-    status.alarmActive = false,
-    status.alarms.forEach((device) => {
+    state.alarmActive = false,
+    state.alarms.forEach((device) => {
       device.alarmActive = false;
     });
   }
@@ -45,18 +45,18 @@ function changeStatus(client, boxTopic, message) {
 }
 
 function triggerAlarm(client, boxTopic, name) {
-  status.alarms.forEach((device) => {
+  state.alarms.forEach((device) => {
     if (device.name.toLowerCase() === name.toLowerCase()) {
       device.alarmActive = true;
     }
   });
-  status.alarmActive = true;
+  state.alarmActive = true;
 
   sendStatus(client, boxTopic);
 }
 
 function triggerLowBattery(client, boxTopic, name) {
-  status.alarms.forEach((device) => {
+  state.alarms.forEach((device) => {
     if (device.name.toLowerCase() === name.toLowerCase()) {
       device.batteryLevel = 1;
     }
@@ -66,19 +66,18 @@ function triggerLowBattery(client, boxTopic, name) {
 }
 
 function reset(client, boxTopic) {
-  status = JSON.parse(JSON.stringify(startValues));
-
+  state = JSON.parse(JSON.stringify(defaultValues));
   sendStatus(client, boxTopic);
 }
 
 function sendStatus(client, boxTopic) {
   const topic = boxTopic+'/fire/status';
 
-  client.publish(topic, JSON.stringify(status), options);
+  client.publish(topic, JSON.stringify(state), options);
 };
 
 module.exports = {
-	sendStatus,
+  sendStatus,
   triggerAlarm,
   triggerLowBattery,
   changeStatus,
