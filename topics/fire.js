@@ -1,25 +1,29 @@
 'use strict';
 
+const messages = require('./topics/messages');
+
 const defaultValues = {
-  alarmActive: false,
-  alarms: [
+  sensors: [
     {
       id: 'abc123',
       name: 'Kitchen',
-      batteryLevel: 6,
+      batteryLevel: 65,
       alarmActive: false,
+      online: true,
       createdAt: '2016-07-16T19:20:30+01:00',
     }, {
       id: 'abc124',
       name: 'Bedroom',
-      batteryLevel: 3,
+      batteryLevel: 32,
       alarmActive: false,
+      online: true,
       createdAt: '2016-12-04T11:10:43+01:00',
     }, {
       id: 'abc125',
       name: 'Livingroom',
-      batteryLevel: 9,
+      batteryLevel: 98,
       alarmActive: false,
+      online: true,
       createdAt: '2016-04-21T09:24:31+01:00',
     },
   ],
@@ -35,7 +39,6 @@ const options = {
 function changeStatus(client, boxTopic, message) {
   if (!!message.command &&
       message.command === 'SITUATION_UNDER_CONTROL') {
-    state.alarmActive = false,
     state.alarms.forEach((device) => {
       device.alarmActive = false;
     });
@@ -50,7 +53,6 @@ function triggerAlarm(client, boxTopic, name) {
       device.alarmActive = true;
     }
   });
-  state.alarmActive = true;
 
   sendStatus(client, boxTopic);
 }
@@ -58,7 +60,15 @@ function triggerAlarm(client, boxTopic, name) {
 function triggerLowBattery(client, boxTopic, name) {
   state.alarms.forEach((device) => {
     if (device.name.toLowerCase() === name.toLowerCase()) {
-      device.batteryLevel = 1;
+      foundDevice = device;
+      device.batteryLevel = 10;
+
+      messages.addMessage(client, boxTopic, {
+          id: 'message-'+Math.random(),
+          text: 'Smoke detector in '+ name + 'is running low on battery.',
+          deviceId: device.id,
+          feature: 'fire',
+        });
     }
   });
 
@@ -72,9 +82,8 @@ function reset(client, boxTopic) {
 
 function sendStatus(client, boxTopic) {
   const topic = boxTopic+'/fire/status';
-
   client.publish(topic, JSON.stringify(state), options);
-};
+}
 
 module.exports = {
   sendStatus,
