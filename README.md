@@ -17,5 +17,5 @@ Open your web browser and go to `localhost:5000/fire/alarm/{name}` where `{name}
 ### Set battery to low
 Open your web browser and go to `localhost:5000/fire/low-battery/{name}` where `{name}` is the name of the device you want to go off.
 
-### Reset to default values
+### Reset the fire topic to default values
 Open your web browser and go to `localhost:5000/fire/reset`.
