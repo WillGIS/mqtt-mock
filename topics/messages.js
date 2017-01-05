@@ -1,14 +1,7 @@
 'use strict';
 
 const defaultValues = {
-  messages: [
-    {
-      id: 'message1',
-      text: 'Hallabalou',
-      deviceId: 'abc123',
-      feature: 'fire',
-    },
-  ],
+  messages: [],
 };
 
 let state = JSON.parse(JSON.stringify(defaultValues));
@@ -21,13 +14,8 @@ const options = {
 function changeStatus(client, boxTopic, message) {
   if (!!message.command &&
       message.command === 'SEEN_MESSAGE' && message.messageId) {
-    state.messages.forEach((msg, index) => {
-      if (msg.id === message.messageId) {
-        state.messages = JSON.parse(JSON.stringify(state.messages.splice(index, 1)));
-      }
-    });
+    state.messages = state.messages.filter(item => item.id !== message.messageId);
   }
-
   sendStatus(client, boxTopic);
 }
 

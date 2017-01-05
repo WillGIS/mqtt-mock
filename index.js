@@ -9,6 +9,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const fire = require('./topics/fire');
+const messages = require('./topics/messages');
 const boxTopic = 'tingco-home/a4b39b8d-1043-4933-b3bb-f193c44d226c';
 
 client.on('connect', () => {  
@@ -30,8 +31,14 @@ client.on('message', (topic, buffer) => {
     case boxTopic+'/fire/status':
       return console.log(message);
 
+    case boxTopic+'/messages/status':
+      return console.log(message);
+
     case boxTopic+'/fire/commands':
    	  return fire.changeStatus(client, boxTopic, message);
+
+   	case boxTopic+'/messages/commands':
+   	  return messages.changeStatus(client, boxTopic, message);
   }
 });
 
