@@ -1,8 +1,8 @@
 'use strict';
-
 const messages = require('./messages');
 
 const defaultValues = {
+  activities: [],
   sensors: [
     {
       id: 'abc123',
@@ -19,7 +19,7 @@ const defaultValues = {
       roomName: 'Bedroom',
       roomId: 'room2',
       batteryLevel: 32,
-      alarmActive: true,
+      alarmActive: false,
       online: true,
       createdAt: '2016-12-04T11:10:43+01:00',
     }, {
@@ -48,14 +48,25 @@ function changeStatus(client, boxTopic, message) {
     state.sensors.forEach((device) => {
       device.alarmActive = false;
     });
-  }
 
-  sendStatus(client, boxTopic);
+    updateLog({
+      activity: message.command,
+      text: 'confrimed by ' + message.username,
+      title: 'Situation under control',
+    })
+    
+    sendStatus(client, boxTopic);
+  }
 }
 
 function triggerAlarm(client, boxTopic, id) {
   state.sensors.forEach((device) => {
     if (device.id.toLowerCase() === id.toLowerCase()) {
+      updateLog({
+        activity: 'SMOKE_DETECTED',
+        text: 'Detected in ' + device.roomName + ' by ' + device.name,
+        title: 'Smoke detected!',
+      });
       device.alarmActive = true;
     }
   });
@@ -68,12 +79,19 @@ function triggerLowBattery(client, boxTopic, id) {
     if (device.id.toLowerCase() === id.toLowerCase()) {
       device.batteryLevel = 10;
 
+      const text = 'The smoke detector in '+ device.roomName + ' (' + device.name + ') is running low on battery';
+      updateLog({
+        activity: 'LOW_BATTERY',
+        text,
+        title: 'Battery running low',
+      })
+        
       messages.addMessage(client, boxTopic, {
-          id: 'message-'+Math.random(),
-          text: 'The smoke detector in '+ device.roomName + ' (' + device.name + ') is running low on battery.',
-          deviceId: device.id,
-          feature: 'fire',
-        });
+        id: 'message-'+Math.random(),
+        text,
+        deviceId: device.id,
+        feature: 'fire',
+      });
     }
   });
 
@@ -88,6 +106,12 @@ function reset(client, boxTopic) {
 function sendStatus(client, boxTopic) {
   const topic = boxTopic+'/fire/status';
   client.publish(topic, JSON.stringify(state), options);
+}
+
+function updateLog(event) {
+  event.date = new Date().toISOString();
+  state.activities.unshift(event);
+  state.activities = state.activities.splice(0, 5);
 }
 
 module.exports = {

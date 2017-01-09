@@ -13,10 +13,10 @@ The client will subscribe to and publish topics that starts with `tingco-home/a4
 
 
 ### Trigger a fire alarm
-Open your web browser and go to `localhost:5000/fire/alarm/{name}` where `{name}` is the name of the device you want to go off.
+Open your web browser and go to `localhost:5000/fire/alarm/{id}` where `{id}` is the name of the device you want to go off.
 
 ### Set battery to low
-Open your web browser and go to `localhost:5000/fire/low-battery/{name}` where `{name}` is the name of the device you want to go off.
+Open your web browser and go to `localhost:5000/fire/low-battery/{id}` where `{id}` is the name of the device you want to go off.
 
 ### Reset the fire topic to default values
 Open your web browser and go to `localhost:5000/fire/reset`.
