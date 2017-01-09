@@ -42,14 +42,14 @@ client.on('message', (topic, buffer) => {
   }
 });
 
-app.get('/fire/alarm/:name', function (req, res) {
-  fire.triggerAlarm(client, boxTopic, req.params.name);
-  res.send('Fire alarm triggered for '+req.params.name);
+app.get('/fire/alarm/:id', function (req, res) {
+  fire.triggerAlarm(client, boxTopic, req.params.id);
+  res.send('Fire alarm triggered for '+req.params.id);
 });
 
-app.get('/fire/low-battery/:name', function (req, res) {
-  fire.triggerLowBattery(client, boxTopic, req.params.name);
-  res.send('Low battery triggered for '+req.params.name);
+app.get('/fire/low-battery/:id', function (req, res) {
+  fire.triggerLowBattery(client, boxTopic, req.params.id);
+  res.send('Low battery triggered for '+req.params.id);
 });
 
 app.get('/fire/reset', function (req, res) {

@@ -7,7 +7,8 @@ const defaultValues = {
     {
       id: 'abc123',
       name: 'Behind the stove',
-      room: 'Kitchen',
+      roomName: 'Kitchen',
+      roomId: 'room1',
       batteryLevel: 65,
       alarmActive: false,
       online: true,
@@ -15,15 +16,17 @@ const defaultValues = {
     }, {
       id: 'abc124',
       name: 'Underneath the bed',
-      room: 'Bedroom',
+      roomName: 'Bedroom',
+      roomId: 'room2',
       batteryLevel: 32,
-      alarmActive: false,
+      alarmActive: true,
       online: true,
       createdAt: '2016-12-04T11:10:43+01:00',
     }, {
       id: 'abc125',
       name: 'Behind the sofa',
-      room: 'Livingroom',
+      roomName: 'Livingroom',
+      roomId: 'room3',
       batteryLevel: 98,
       alarmActive: false,
       online: true,
@@ -50,9 +53,9 @@ function changeStatus(client, boxTopic, message) {
   sendStatus(client, boxTopic);
 }
 
-function triggerAlarm(client, boxTopic, name) {
+function triggerAlarm(client, boxTopic, id) {
   state.sensors.forEach((device) => {
-    if (device.name.toLowerCase() === name.toLowerCase()) {
+    if (device.id.toLowerCase() === id.toLowerCase()) {
       device.alarmActive = true;
     }
   });
@@ -60,14 +63,14 @@ function triggerAlarm(client, boxTopic, name) {
   sendStatus(client, boxTopic);
 }
 
-function triggerLowBattery(client, boxTopic, name) {
+function triggerLowBattery(client, boxTopic, id) {
   state.sensors.forEach((device) => {
-    if (device.room.toLowerCase() === name.toLowerCase()) {
+    if (device.id.toLowerCase() === id.toLowerCase()) {
       device.batteryLevel = 10;
 
       messages.addMessage(client, boxTopic, {
           id: 'message-'+Math.random(),
-          text: 'The smoke detector in '+ device.room + ' (' + device.name + ') is running low on battery.',
+          text: 'The smoke detector in '+ device.roomName + ' (' + device.name + ') is running low on battery.',
           deviceId: device.id,
           feature: 'fire',
         });
