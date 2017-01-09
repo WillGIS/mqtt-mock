@@ -53,6 +53,7 @@ function changeStatus(client, boxTopic, message) {
       activity: message.command,
       text: 'confrimed by ' + message.username,
       title: 'Situation under control',
+      reportedBy: message.username,
     })
     
     sendStatus(client, boxTopic);
