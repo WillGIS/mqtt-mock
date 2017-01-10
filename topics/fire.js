@@ -12,7 +12,6 @@ const defaultValues = {
       batteryLevel: 65,
       alarmActive: false,
       online: true,
-      createdAt: '2016-07-16T19:20:30+01:00',
     }, {
       id: 'abc124',
       name: 'Underneath the bed',
@@ -21,7 +20,6 @@ const defaultValues = {
       batteryLevel: 32,
       alarmActive: false,
       online: true,
-      createdAt: '2016-12-04T11:10:43+01:00',
     }, {
       id: 'abc125',
       name: 'Behind the sofa',
@@ -30,7 +28,6 @@ const defaultValues = {
       batteryLevel: 98,
       alarmActive: false,
       online: true,
-      createdAt: '2016-04-21T09:24:31+01:00',
     },
   ],
 };
@@ -65,7 +62,7 @@ function triggerAlarm(client, boxTopic, id) {
     if (device.id.toLowerCase() === id.toLowerCase()) {
       updateLog({
         activity: 'SMOKE_DETECTED',
-        text: 'Detected in ' + device.roomName + ' by ' + device.name,
+        text: 'Detected in ' + device.roomName + ' - ' + device.name,
         title: 'Smoke detected!',
       });
       device.alarmActive = true;
