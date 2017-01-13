@@ -12,6 +12,7 @@ const defaultValues = {
       batteryLevel: 65,
       alarmActive: false,
       online: true,
+      silenced: false,
     }, {
       id: 'abc124',
       name: 'Underneath the bed',
@@ -20,6 +21,7 @@ const defaultValues = {
       batteryLevel: 32,
       alarmActive: false,
       online: true,
+      silenced: false,
     }, {
       id: 'abc125',
       name: 'Behind the sofa',
@@ -28,6 +30,7 @@ const defaultValues = {
       batteryLevel: 98,
       alarmActive: false,
       online: true,
+      silenced: false,
     },
   ],
 };
@@ -43,7 +46,7 @@ function changeStatus(client, boxTopic, message) {
   if (!!message.command &&
       message.command === 'SITUATION_UNDER_CONTROL') {
     state.sensors.forEach((device) => {
-      device.alarmActive = false;
+      device.silenced = true;
     });
 
     updateLog({
@@ -101,6 +104,21 @@ function reset(client, boxTopic) {
   sendStatus(client, boxTopic);
 }
 
+function smokeCleared(client, boxTopic) {
+  state.sensors.forEach((device) => {
+    device.alarmActive = false;
+    device.silenced = false;
+  });
+
+  updateLog({
+    activity: 'SMOKE_CLEARED',
+    text: 'The smoke cleared. Situation under control',
+    title: 'Smoke cleared',
+  });
+
+  sendStatus(client, boxTopic);
+}
+
 function sendStatus(client, boxTopic) {
   const topic = boxTopic+'/fire/status';
   client.publish(topic, JSON.stringify(state), options);
@@ -118,4 +136,5 @@ module.exports = {
   triggerLowBattery,
   changeStatus,
   reset,
+  smokeCleared,
 };

@@ -57,6 +57,11 @@ app.get('/fire/reset', function (req, res) {
   res.send('The fire alarm state has been set to default.');
 });
 
+app.get('/fire/smoke-cleared', function (req, res) {
+  fire.smokeCleared(client, boxTopic);
+  res.send('Smoke cleared is now triggered.');
+});
+
 app.listen(port, function () {
   console.log('The app listening on port ' + port);
 });
