@@ -5,8 +5,8 @@ const defaultValues = {
   activities: [],
   sensors: [
     {
-      id: 'abc123',
-      name: 'Front door',
+      deviceId: 'abc123',
+      deviceName: 'Front door',
       roomName: 'Entre',
       roomId: 'room1',
       batteryLevel: 65,
@@ -14,8 +14,8 @@ const defaultValues = {
       online: true,
       silenced: false,
     }, {
-      id: 'abc124',
-      name: 'Livingroom window',
+      deviceId: 'abc124',
+      deviceName: 'Livingroom window',
       roomName: 'Livingroom',
       roomId: 'room2',
       batteryLevel: 32,

@@ -5,8 +5,8 @@ const defaultValues = {
   activities: [],
   sensors: [
     {
-      id: 'abc123',
-      name: 'Behind the stove',
+      deviceId: 'abc123',
+      deviceName: 'Behind the stove',
       roomName: 'Kitchen',
       roomId: 'room1',
       batteryLevel: 65,
@@ -14,8 +14,8 @@ const defaultValues = {
       online: true,
       silenced: false,
     }, {
-      id: 'abc124',
-      name: 'Underneath the bed',
+      deviceId: 'abc124',
+      deviceName: 'Underneath the bed',
       roomName: 'Bedroom',
       roomId: 'room2',
       batteryLevel: 32,
@@ -23,8 +23,8 @@ const defaultValues = {
       online: true,
       silenced: false,
     }, {
-      id: 'abc125',
-      name: 'Behind the sofa',
+      deviceId: 'abc125',
+      deviceName: 'Behind the sofa',
       roomName: 'Livingroom',
       roomId: 'room3',
       batteryLevel: 98,
