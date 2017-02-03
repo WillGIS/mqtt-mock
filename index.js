@@ -93,6 +93,16 @@ app.get('/flooding/water-level-restored', function (req, res) {
   res.send('Water level restored is now triggered.');
 });
 
+app.get('/burglar/arm', function (req, res) {
+  burglar.arm(client, boxTopic);
+  res.send('Burglar alarm armed');
+});
+
+app.get('/burglar/disarm', function (req, res) {
+  burglar.disarm(client, boxTopic);
+  res.send('Burglar alarm disarmed');
+});
+
 app.get('/burglar/alarm/:id', function (req, res) {
   burglar.triggerAlarm(client, boxTopic, req.params.id);
   res.send('Burglar alarm triggered for '+req.params.id);

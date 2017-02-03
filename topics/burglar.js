@@ -2,6 +2,7 @@
 const messages = require('./messages');
 
 const defaultValues = {
+  armed: false,
   activities: [],
   sensors: [
     {
@@ -34,8 +35,7 @@ const options = {
 };
 
 function changeStatus(client, boxTopic, message) {
-  if (!!message.command &&
-      message.command === 'SITUATION_UNDER_CONTROL') {
+  if (!!message.command && message.command === 'SITUATION_UNDER_CONTROL') {
     state.sensors.forEach((device) => {
       device.silenced = true;
     });
@@ -44,6 +44,28 @@ function changeStatus(client, boxTopic, message) {
       activity: message.command,
       text: 'confrimed by ' + message.username,
       title: 'Situation under control',
+      reportedBy: message.username,
+    })
+    
+    sendStatus(client, boxTopic);
+  } else if (!!message.command && message.command === 'ARM') {
+    state.armed = true;
+
+    updateLog({
+      activity: message.command,
+      text: 'armed by ' + message.username,
+      title: 'Burglar alarm armed',
+      reportedBy: message.username,
+    })
+    
+    sendStatus(client, boxTopic);
+  } else if (!!message.command && message.command === 'DISARM') {
+    state.armed = false;
+
+    updateLog({
+      activity: message.command,
+      text: 'disarmed by ' + message.username,
+      title: 'Burglar alarm disarmed',
       reportedBy: message.username,
     })
     
@@ -110,6 +132,28 @@ function burglarHasLeft(client, boxTopic) {
   sendStatus(client, boxTopic);
 }
 
+function arm(client, boxTopic) {
+    state.armed = true;
+    updateLog({
+      activity: 'ARM',
+      text: 'armed by user@domain.com',
+      title: 'Burglar alarm armed',
+      reportedBy: 'user@domain.com',
+    }) 
+    sendStatus(client, boxTopic);
+}
+
+function disarm(client, boxTopic) {
+    state.armed = false;
+    updateLog({
+      activity: 'DISARM',
+      text: 'disarmed by user@domain.com',
+      title: 'Burglar alarm disarmed',
+      reportedBy: 'user@domain.com',
+    }) 
+    sendStatus(client, boxTopic);
+}
+
 function sendStatus(client, boxTopic) {
   const topic = boxTopic+'/burglar/status';
   client.publish(topic, JSON.stringify(state), options);
@@ -128,4 +172,6 @@ module.exports = {
   changeStatus,
   reset,
   burglarHasLeft,
+  arm,
+  disarm,
 };
