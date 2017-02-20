@@ -2,24 +2,32 @@
 const messages = require('./messages');
 
 const defaultValues = {
-  armed: false,
   activities: [],
   sensors: [
     {
       deviceId: 'abc123',
-      deviceName: 'Front door',
-      roomName: 'Entre',
+      deviceName: 'Behind the dishwasher',
+      roomName: 'Kitchen',
       roomId: 'room1',
-      batteryLevel: 65,
+      batteryLevel: 8,
       alarmActive: false,
       online: true,
       silenced: false,
     }, {
       deviceId: 'abc124',
-      deviceName: 'Livingroom window',
-      roomName: 'Livingroom',
-      roomId: 'room2',
-      batteryLevel: 32,
+      deviceName: 'Underneath the refrigerator',
+      roomName: 'Kitchen',
+      roomId: 'room1',
+      batteryLevel: 25,
+      alarmActive: false,
+      online: true,
+      silenced: false,
+    }, {
+      deviceId: 'abc125',
+      deviceName: 'Underneath the washing machine',
+      roomName: 'Bathroom',
+      roomId: 'room4',
+      batteryLevel: 100,
       alarmActive: false,
       online: true,
       silenced: false,
@@ -35,7 +43,8 @@ const options = {
 };
 
 function changeStatus(client, boxTopic, message) {
-  if (!!message.command && message.command === 'SITUATION_UNDER_CONTROL') {
+  if (!!message.command &&
+      message.command === 'SITUATION_UNDER_CONTROL') {
     state.sensors.forEach((device) => {
       device.silenced = true;
     });
@@ -48,28 +57,6 @@ function changeStatus(client, boxTopic, message) {
     })
     
     sendStatus(client, boxTopic);
-  } else if (!!message.command && message.command === 'ARM') {
-    state.armed = true;
-
-    updateLog({
-      activity: message.command,
-      text: 'armed by ' + message.username,
-      title: 'Burglar alarm armed',
-      reportedBy: message.username,
-    })
-    
-    sendStatus(client, boxTopic);
-  } else if (!!message.command && message.command === 'DISARM') {
-    state.armed = false;
-
-    updateLog({
-      activity: message.command,
-      text: 'disarmed by ' + message.username,
-      title: 'Burglar alarm disarmed',
-      reportedBy: message.username,
-    })
-    
-    sendStatus(client, boxTopic);
   }
 }
 
@@ -77,9 +64,9 @@ function triggerAlarm(client, boxTopic, id) {
   state.sensors.forEach((device) => {
     if (device.deviceId.toLowerCase() === id.toLowerCase()) {
       updateLog({
-        activity: 'MOTION_DETECED',
+        activity: 'WATER_DETECTED',
         text: 'Detected in ' + device.roomName + ' - ' + device.deviceName,
-        title: 'Motion detected!',
+        title: 'Water detected!',
       });
       device.alarmActive = true;
     }
@@ -93,7 +80,7 @@ function triggerLowBattery(client, boxTopic, id) {
     if (device.deviceId.toLowerCase() === id.toLowerCase()) {
       device.batteryLevel = 10;
 
-      const text = 'The motion detector in '+ device.roomName + ' (' + device.deviceName + ') is running low on battery';
+      const text = 'The flooding detector in '+ device.roomName + ' (' + device.deviceName + ') is running low on battery';
       updateLog({
         activity: 'LOW_BATTERY',
         text,
@@ -104,7 +91,7 @@ function triggerLowBattery(client, boxTopic, id) {
         id: 'message-'+Math.random(),
         text,
         deviceId: device.deviceId,
-        feature: 'burglar',
+        feature: 'flooding',
       });
     }
   });
@@ -117,45 +104,23 @@ function reset(client, boxTopic) {
   sendStatus(client, boxTopic);
 }
 
-function burglarHasLeft(client, boxTopic) {
+function waterLevelRestored(client, boxTopic) {
   state.sensors.forEach((device) => {
     device.alarmActive = false;
     device.silenced = false;
   });
 
   updateLog({
-    activity: 'BURGLAR_HAS_LEFT',
-    text: 'The burglar has left. Situation under control',
-    title: 'Burglar has left',
+    activity: 'WATER_LEVEL_RESTORED',
+    text: 'The water level is restored. Situation under control',
+    title: 'Water level restored',
   });
 
   sendStatus(client, boxTopic);
 }
 
-function arm(client, boxTopic) {
-    state.armed = true;
-    updateLog({
-      activity: 'ARM',
-      text: 'armed by user@domain.com',
-      title: 'Burglar alarm armed',
-      reportedBy: 'user@domain.com',
-    }) 
-    sendStatus(client, boxTopic);
-}
-
-function disarm(client, boxTopic) {
-    state.armed = false;
-    updateLog({
-      activity: 'DISARM',
-      text: 'disarmed by user@domain.com',
-      title: 'Burglar alarm disarmed',
-      reportedBy: 'user@domain.com',
-    }) 
-    sendStatus(client, boxTopic);
-}
-
 function sendStatus(client, boxTopic) {
-  const topic = boxTopic+'/burglar/status';
+  const topic = boxTopic+'/flooding/status';
   client.publish(topic, JSON.stringify(state), options);
 }
 
@@ -171,7 +136,5 @@ module.exports = {
   triggerLowBattery,
   changeStatus,
   reset,
-  burglarHasLeft,
-  arm,
-  disarm,
+  waterLevelRestored,
 };

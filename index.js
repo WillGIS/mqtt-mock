@@ -9,6 +9,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const fire = require('./topics/fire');
+const flooding = require('./topics/flooding');
 const burglar = require('./topics/burglar');
 const messages = require('./topics/messages');
 
@@ -22,6 +23,7 @@ client.on('connect', () => {
   client.publish(boxTopic+'/box/connected', 'true');
 
   fire.sendStatus(client, boxTopic);
+  flooding.sendStatus(client, boxTopic);
   burglar.sendStatus(client, boxTopic);
 });
 
@@ -35,6 +37,9 @@ client.on('message', (topic, buffer) => {
     case boxTopic+'/fire/status':
       return console.log(message);
 
+    case boxTopic+'/flooding/status':
+      return console.log(message);
+
     case boxTopic+'/burglar/status':
       return console.log(message);
 
@@ -43,6 +48,9 @@ client.on('message', (topic, buffer) => {
 
     case boxTopic+'/fire/command':
    	  return fire.changeStatus(client, boxTopic, message);
+
+    case boxTopic+'/burglar/command':
+      return flooding.changeStatus(client, boxTopic, message);
 
     case boxTopic+'/burglar/command':
       return burglar.changeStatus(client, boxTopic, message);
@@ -70,6 +78,31 @@ app.get('/fire/reset', function (req, res) {
 app.get('/fire/smoke-cleared', function (req, res) {
   fire.smokeCleared(client, boxTopic);
   res.send('Smoke cleared is now triggered.');
+});
+
+app.get('/flooding/alarm/:id', function (req, res) {
+  flooding.triggerAlarm(client, boxTopic, req.params.id);
+  res.send('Flooding alarm triggered for '+req.params.id);
+});
+
+app.get('/flooding/low-battery/:id', function (req, res) {
+  flooding.triggerLowBattery(client, boxTopic, req.params.id);
+  res.send('Low battery triggered for '+req.params.id);
+});
+
+app.get('/flooding/water-level-restored', function (req, res) {
+  flooding.waterLevelRestored(client, boxTopic);
+  res.send('Water level restored is now triggered.');
+});
+
+app.get('/burglar/arm', function (req, res) {
+  burglar.arm(client, boxTopic);
+  res.send('Burglar alarm armed');
+});
+
+app.get('/burglar/disarm', function (req, res) {
+  burglar.disarm(client, boxTopic);
+  res.send('Burglar alarm disarmed');
 });
 
 app.get('/burglar/alarm/:id', function (req, res) {
