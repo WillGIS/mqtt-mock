@@ -11,7 +11,9 @@ const port = process.env.PORT || 5000;
 const fire = require('./topics/fire');
 const burglar = require('./topics/burglar');
 const messages = require('./topics/messages');
-const boxTopic = 'tingco-home/a4b39b8d-1043-4933-b3bb-f193c44d226c';
+
+
+const boxTopic = 'user/device/00000000-0000-0000-0000-000000000007';
 
 client.on('connect', () => {  
   console.log('connected');
@@ -39,13 +41,13 @@ client.on('message', (topic, buffer) => {
     case boxTopic+'/messages/status':
       return console.log(message);
 
-    case boxTopic+'/fire/commands':
+    case boxTopic+'/fire/command':
    	  return fire.changeStatus(client, boxTopic, message);
 
-    case boxTopic+'/burglar/commands':
+    case boxTopic+'/burglar/command':
       return burglar.changeStatus(client, boxTopic, message);
 
-   	case boxTopic+'/messages/commands':
+   	case boxTopic+'/messages/command':
    	  return messages.changeStatus(client, boxTopic, message);
   }
 });
