@@ -64,7 +64,7 @@ function triggerAlarm(client, boxTopic, id) {
   state.sensors.forEach((device) => {
     if (device.deviceId.toLowerCase() === id.toLowerCase()) {
       updateLog({
-        activity: 'WATER_DETECTED',
+        activity: 'ALARM_TRIGGERED',
         text: 'Detected in ' + device.roomName + ' - ' + device.deviceName,
         title: 'Water detected!',
       });
@@ -111,7 +111,7 @@ function waterLevelRestored(client, boxTopic) {
   });
 
   updateLog({
-    activity: 'WATER_LEVEL_RESTORED',
+    activity: 'ALARM_CLEARED',
     text: 'The water level is restored. Situation under control',
     title: 'Water level restored',
   });

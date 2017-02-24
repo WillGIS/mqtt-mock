@@ -64,7 +64,7 @@ function triggerAlarm(client, boxTopic, id) {
   state.sensors.forEach((device) => {
     if (device.deviceId.toLowerCase() === id.toLowerCase()) {
       updateLog({
-        activity: 'SMOKE_DETECTED',
+        activity: 'ALARM_TRIGGERED',
         text: 'Detected in ' + device.roomName + ' - ' + device.deviceName,
         title: 'Smoke detected!',
       });
@@ -111,7 +111,7 @@ function smokeCleared(client, boxTopic) {
   });
 
   updateLog({
-    activity: 'SMOKE_CLEARED',
+    activity: 'ALARM_CLEARED',
     text: 'The smoke cleared. Situation under control',
     title: 'Smoke cleared',
   });

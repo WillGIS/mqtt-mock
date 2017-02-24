@@ -49,6 +49,9 @@ client.on('message', (topic, buffer) => {
     case boxTopic+'/fire/command':
    	  return fire.changeStatus(client, boxTopic, message);
 
+    case boxTopic+'/flooding/command':
+      return flooding.changeStatus(client, boxTopic, message);
+
     case boxTopic+'/burglar/command':
       return flooding.changeStatus(client, boxTopic, message);
 
