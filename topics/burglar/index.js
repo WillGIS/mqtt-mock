@@ -54,6 +54,7 @@ function reset(client, boxTopic) {
 function arm(client, boxTopic, message) {
   state.inAFlow = false;
   state.state = 'ARMED';
+  state.configuration = !!message.configuration ? message.configuration : 'FULL',
   secondsToNextState: null,
 
   utils.updateLog({
