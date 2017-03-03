@@ -53,10 +53,7 @@ client.on('message', (topic, buffer) => {
       return flooding.changeStatus(client, boxTopic, message);
 
     case boxTopic+'/burglar/command':
-      return flooding.changeStatus(client, boxTopic, message);
-
-    case boxTopic+'/burglar/command':
-      return burglar.changeStatus(client, boxTopic, message);
+      return burglar.command(client, boxTopic, message);
 
    	case boxTopic+'/messages/command':
    	  return messages.changeStatus(client, boxTopic, message);
@@ -98,29 +95,30 @@ app.get('/flooding/water-level-restored', function (req, res) {
   res.send('Water level restored is now triggered.');
 });
 
-app.get('/burglar/arm', function (req, res) {
-  burglar.arm(client, boxTopic);
-  res.send('Burglar alarm armed');
-});
-
-app.get('/burglar/disarm', function (req, res) {
-  burglar.disarm(client, boxTopic);
-  res.send('Burglar alarm disarmed');
-});
-
-app.get('/burglar/alarm/:id', function (req, res) {
-  burglar.triggerAlarm(client, boxTopic, req.params.id);
-  res.send('Burglar alarm triggered for '+req.params.id);
-});
-
 app.get('/burglar/low-battery/:id', function (req, res) {
   burglar.triggerLowBattery(client, boxTopic, req.params.id);
   res.send('Low battery triggered for '+req.params.id);
 });
 
-app.get('/burglar/burglar-has-left', function (req, res) {
-  burglar.burglarHasLeft(client, boxTopic);
-  res.send('Burglar has left is now triggered.');
+app.get('/burglar/apartment-flow-1', function (req, res) {
+  burglar.apartmentFlow1(client, boxTopic);
+  res.send('Burglar "Apartment Flow 1" started if the alarm was ARMED');
+});
+
+app.get('/burglar/arm', function (req, res) {
+  const message = {
+    username: 'mock-machine',
+  };
+  burglar.arm(client, boxTopic, message);
+  res.send('Burglar alarm armed');
+});
+
+app.get('/burglar/disarm', function (req, res) {
+  const message = {
+    username: 'mock-machine',
+  };
+  burglar.disarm(client, boxTopic, message);
+  res.send('Burglar alarm disarmed');
 });
 
 app.listen(port, function () {
