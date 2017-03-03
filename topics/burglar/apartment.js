@@ -71,7 +71,7 @@ function flow1(client, boxTopic, state) {
         console.log('-----------------------------------------------');
         return utils.getSensor('Livingroom motion', state);
       }).then((sensor) => {
-        return utils.triggerSensor(client, boxTopic, sensor, 13, state);
+        return utils.triggerSensor(client, boxTopic, sensor, 5, state);
       }).then(() => {
         console.log('-----------------------------------------------');
         console.log('Motion sensor in livingroom is triggered');

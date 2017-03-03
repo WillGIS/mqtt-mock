@@ -54,7 +54,7 @@ function triggerSensor(client, boxTopic, sensor, delayInSeconds, state) {
   // Delay the promise resolving
 
     setTimeout(() => {
-      if (!!state.inAFlow) {
+      if (!!state.inAFlow && state.state !== 'DISARMED') {
         console.log('-----------------------------------------------');
         console.warn('SENSOR THAT SHOULD BE TRIGGERED:');
         console.warn(sensor);
