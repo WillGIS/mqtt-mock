@@ -55,7 +55,7 @@ function arm(client, boxTopic, message) {
   state.inAFlow = false;
   state.state = 'ARMED';
   state.configuration = !!message.configuration ? message.configuration : 'FULL',
-  secondsToNextState: null,
+  state.secondsToNextState = null,
 
   utils.updateLog({
     activity: 'ARMED',
@@ -88,7 +88,7 @@ function disarm(client, boxTopic, message) {
 }
 
 function sendStatus(client, boxTopic) {
-  utils.sendStatus(client, boxTopic, state);
+  utils.sendStatus(client, boxTopic, state, true);
 }
 
 module.exports = {
