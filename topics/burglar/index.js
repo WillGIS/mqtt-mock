@@ -59,7 +59,7 @@ function arm(client, boxTopic, message) {
 
   utils.updateLog({
     activity: 'ARMED',
-    text: 'Disarmed by ' + message.username,
+    text: 'Armed by ' + message.username,
     title: 'Burglar alarm armed',
     reportedBy: message.username,
   }, state);
