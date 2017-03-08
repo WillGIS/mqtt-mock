@@ -106,7 +106,7 @@ function disarm(client, boxTopic, message) {
     reportedBy: message.username,
   }, state);
 
-  utils.sendStatus(client, boxTopic, state);
+  utils.sendStatus(client, boxTopic, state, true);
   clearInterval(armDelayInterval);
 }
 
