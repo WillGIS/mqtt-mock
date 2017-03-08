@@ -4,6 +4,9 @@ const utils = require('./utils');
 const apartment = require('./apartment');
 const messages = require('./../messages');
 
+const ARM_DELAY_IN_SECONDS = 15;
+let armDelayInterval = null;
+
 const defaultValues = apartment.defaultState;
 
 let state = JSON.parse(JSON.stringify(defaultValues));
@@ -15,6 +18,8 @@ function command(client, boxTopic, message) {
       return arm(client, boxTopic, message);
     case 'DISARM':
       return disarm(client, boxTopic, message);
+    case 'ARM_DELAYED':
+      return delayArm(client, boxTopic, message);
   }
 }
 
@@ -67,6 +72,23 @@ function arm(client, boxTopic, message) {
   utils.sendStatus(client, boxTopic, state);
 }
 
+function delayArm(client, boxTopic, message) {
+  state.inAFlow = false;
+  state.state = 'DELAYED_ARMED';
+  state.configuration = !!message.configuration ? message.configuration : 'FULL',
+  state.secondsToNextState = ARM_DELAY_IN_SECONDS,
+
+  armDelayInterval = setInterval(() => {
+    state.secondsToNextState -= 1;
+    utils.sendStatus(client, boxTopic, state);
+    if (state.secondsToNextState === 0) {
+      clearInterval(armDelayInterval);
+      arm(client, boxTopic, message);
+    }
+  }, 1000);
+  utils.sendStatus(client, boxTopic, state);
+}
+
 function disarm(client, boxTopic, message) {
   /**
    * Start by cancelling ongoing flow
@@ -85,6 +107,7 @@ function disarm(client, boxTopic, message) {
   }, state);
 
   utils.sendStatus(client, boxTopic, state);
+  clearInterval(armDelayInterval);
 }
 
 function sendStatus(client, boxTopic) {
