@@ -6,7 +6,7 @@ const messages = require('./../messages');
 
 const defaultValues = apartment.defaultState;
 
-let state = JSON.parse(JSON.stringify(defaultValues));
+let state = defaultValues;
 state.inAFlow = false;
 
 function command(client, boxTopic, message) {
@@ -57,6 +57,10 @@ function arm(client, boxTopic, message) {
   state.configuration = !!message.configuration ? message.configuration : 'FULL',
   state.secondsToNextState = null,
 
+  state.sensors.forEach(sensor => {
+    sensor.triggered = false;
+  });
+
   utils.updateLog({
     activity: 'ARMED',
     text: 'Disarmed by ' + message.username,
@@ -64,7 +68,7 @@ function arm(client, boxTopic, message) {
     reportedBy: message.username,
   }, state);
 
-  utils.sendStatus(client, boxTopic, state);
+  utils.sendStatus(client, boxTopic, state, true);
 }
 
 function disarm(client, boxTopic, message) {
@@ -84,7 +88,7 @@ function disarm(client, boxTopic, message) {
     reportedBy: message.username,
   }, state);
 
-  utils.sendStatus(client, boxTopic, state);
+  utils.sendStatus(client, boxTopic, state, true);
 }
 
 function sendStatus(client, boxTopic) {

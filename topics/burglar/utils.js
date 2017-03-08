@@ -72,8 +72,8 @@ function triggerSensor(client, boxTopic, sensor, delayInSeconds, state) {
           * If this is the first sensor that is triggered and the device
           * should not directly set off the alarm
           **/
-          if (state.state !== 'ALARM_TRIGGERED' &&
-              state.state !== 'DELAYED_ALARM_TRIGGERED' && sensor.delayed) {
+          if (sensor.delayed && state.state !== 'ALARM_TRIGGERED' &&
+              state.state !== 'DELAYED_ALARM_TRIGGERED') {
             let interval;
             let passedMilliSeconds = 0;
             interval = setInterval(() => {
@@ -90,7 +90,7 @@ function triggerSensor(client, boxTopic, sensor, delayInSeconds, state) {
                   state.secondsToNextState = (ALARM_DELAY - passedMilliSeconds) / ONE_SECOND;
                   if (state.state !== 'ALARM_TRIGGERED' && state.state !== 'DELAYED_ALARM_TRIGGERED') {
                     state.state = 'DELAYED_ALARM_TRIGGERED';
-                    state.secondsToNextState = null;
+                    // state.secondsToNextState = null;
                   }
 
                   sendStatus(client, boxTopic, state, false);
