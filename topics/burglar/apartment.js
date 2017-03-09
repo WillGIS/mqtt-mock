@@ -97,7 +97,34 @@ function flow1(client, boxTopic, state) {
   }
 }
 
+function flow2(client, boxTopic, state) {
+  if (state.state === 'ARMED') {
+    state.inAFlow = true;
+    console.log('The burglar has started! Apartment Flow 2 is playing!');
+    return new Promise((resolve, reject) => {
+      return utils.getSensor('Entrance', state)
+      .then((sensor) => {
+        return utils.triggerSensor(client, boxTopic, sensor, 0, state);
+      }).then(() => {
+        console.log('-----------------------------------------------');
+        console.log('Door sensor in the hallway is triggered');
+        console.log('-----------------------------------------------');
+
+        console.log('-----------------------------------------------');
+        console.log('This is as far as it gets this time...');
+        console.log('-----------------------------------------------');
+      }).catch(error => {
+        console.log(error);
+        console.log('-----------------------------------------------');
+        console.warn('The breakin stopped for some reason. Probably the alarm got disarmed');
+        console.log('-----------------------------------------------');
+      });
+    });
+  }
+}
+
 module.exports = {
   defaultState,
   flow1,
+  flow2,
 };

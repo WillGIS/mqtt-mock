@@ -105,6 +105,11 @@ app.get('/burglar/apartment-flow-1', function (req, res) {
   res.send('Burglar "Apartment Flow 1" started if the alarm was ARMED');
 });
 
+app.get('/burglar/apartment-flow-2', function (req, res) {
+  burglar.apartmentFlow2(client, boxTopic);
+  res.send('Burglar "Apartment Flow 2" started if the alarm was ARMED');
+});
+
 app.get('/burglar/arm', function (req, res) {
   const message = {
     username: 'mock-machine',

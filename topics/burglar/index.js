@@ -22,6 +22,10 @@ function apartmentFlow1(client, boxTopic) {
   apartment.flow1(client, boxTopic, state);
 }
 
+function apartmentFlow2(client, boxTopic) {
+  apartment.flow2(client, boxTopic, state);
+}
+
 function triggerLowBattery(client, boxTopic, id) {
   state.sensors.forEach((device) => {
     if (device.deviceId.toLowerCase() === id.toLowerCase()) {
@@ -101,6 +105,7 @@ module.exports = {
   arm,
   disarm,
   apartmentFlow1,
+  apartmentFlow2,
   command,
   sendStatus,
 };
