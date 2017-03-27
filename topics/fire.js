@@ -46,7 +46,9 @@ function changeStatus(client, boxTopic, message) {
   if (!!message.command &&
       message.command === 'SITUATION_UNDER_CONTROL') {
     state.sensors.forEach((device) => {
-      device.silenced = true;
+      if (!!device.alarmActive) {
+        device.silenced = true;
+      }
     });
 
     updateLog({
