@@ -1,5 +1,7 @@
 'use strict';
 
+var date = require('date-and-time');
+
 const defaultValues = {
     messages: [],
 };
@@ -15,6 +17,11 @@ function addMessage(client, boxTopic, message) {
     console.log('exports-addMessage');
 }
 
+function getCurrentTime(formate) {
+    return date.format(new Date(), formate);
+}
+
 module.exports = {
-    addMessage
+    addMessage,
+    getCurrentTime
 };
