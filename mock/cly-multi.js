@@ -10,12 +10,14 @@ const broker = process.env.BROKER || '60.30.105.251';
 // const broker = process.env.BROKER || '47.102.200.126';
 const username = 'mos';
 const password = 'mos';
-const device_count = process.env.DEVICE_COUNT || 10;
+const device_count = process.env.DEVICE_COUNT || 2;
 
 // celiuyi topic
-const cly_topic_prefix = 'cly_';
-const cly_upload_sufix = '_up';
-const cly_download_sufix = '_down';
+const cly_topic_prefix = '/cly/up/';
+const cly_topic_prefix2 = '/cly/down/';
+
+const cly_upload_sufix = '';
+const cly_download_sufix = '';
 
 let deviceArray = [];
 var deviceTopics = [];
@@ -66,11 +68,11 @@ deviceArray.forEach(function (idx) {
     client_up.on('connect', () => {
         console.log(client_up.options.clientId + ' connected');
         var topic_up = cly_topic_prefix + client_up.options.deviceId + cly_upload_sufix;
-        var topic_down = cly_topic_prefix + client_up.options.deviceId + cly_download_sufix;
+        var topic_down = cly_topic_prefix2 + client_up.options.deviceId + cly_download_sufix;
         // console.log('topic:' + topic_up);
         // client_up.subscribe(topic_up);
         client_up.subscribe(topic_down);
-        // 发送上线数据包
+        // 发送上线数据指令
         console.log('client_up.options.deviceId:' + client_up.options.deviceId)
         client_up.publish(topic_up, '#SERVER,1,' + client_up.options.deviceId);
     });
@@ -87,7 +89,8 @@ deviceArray.forEach(function (idx) {
         var data_len = cly_data.length;
         if (resp.startsWith('#SERVER,1,')) {
             var _topicUp = topic.replace('down', 'up');
-            client_up.publish(_topicUp, cly_data[0]);
+            client_up.publish(_topicUp, cly_data[0].replace("青岛欧森测试", _topicUp + "青岛欧森测试"));
+            console.log(93 + cly_data[0].replace("青岛欧森测试", _topicUp + "青岛欧森测试"));
         }
         // else if (resp.startsWith('#UPLOAD,')) {
         // } 
