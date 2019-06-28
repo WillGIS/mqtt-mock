@@ -7,10 +7,10 @@ const mqtt = require('mqtt');
 const common = require('../common/common');
 const cloneDeep = require('clone-deep');
 const broker = process.env.BROKER || '60.30.105.251';
-// const broker = process.env.BROKER || '47.102.200.126';
+const port = process.env.PORT || 11883;
 const username = 'mos';
 const password = 'mos';
-const device_count = process.env.DEVICE_COUNT || 500;
+const device_count = process.env.DEVICE_COUNT || 2;
 
 // celiuyi topic
 const cly_topic_prefix = '/cly/up/';
@@ -46,7 +46,8 @@ deviceArray.forEach(function (idx) {
         'clientId': 'sunic_cly_' + Math.random().toString(16).substr(2, 8),
         'username': username,
         'password': password,
-        'deviceId': idx
+        'deviceId': idx,
+        'port': port
     });
     // 客户端链接成功后订阅topic
     client_up.on('connect', () => {
